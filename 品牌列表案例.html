@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style type="text/css">
+		th,td{
+			width: 800px;
+			height: 30px;
+			text-align: center;
+			font-size: 12px;
+		}
+	</style>
+</head>
+<body>
+<div id="app">
+	<label>
+		id:<input type="text" v-model="id">
+	</label>
+	<label>
+		name:<input type="text" v-model="name" @keyup.enter="add">
+	</label>
+	<label>
+		<input type="button" value="添加" @click="add">
+	</label>
+	<label>
+		搜索关键字:<input type="text" v-model="keywords" id="search" v-focus="" v-color> 
+	</label>
+	<table border="1" bordercolor="black" cellspacing="0">
+		<thead>
+			<tr>
+				<th>id</th>
+				<th>name</th>
+				<th>time</th>
+				<th>opetion</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr v-for="item in search(keywords)" :key="item.id">
+				<td>{{item.id}}</td>
+				<td>{{item.name}}</td>
+				<td>{{item.time}}</td> 
+				<td><a href="" @click.prevent="del(item.id)">删除</a></td>
+				<!-- 根据id删除数组项 -->
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<script type="text/javascript" src="vue.js"></script>
+<script type="text/javascript">
+	Vue.directive('focus',{
+		bind:function(el){
+			// el.focus()
+		},
+		inserted:function(el){
+			el.focus()
+		},
+		update:function(el){
+			el.focus()
+		}
+	})
+	Vue.directive('color',{
+		bind:function(el){
+			el.style.color="blue";
+		}
+	})
+	var vm=new Vue({
+		el:"#app",
+		data:{
+			id:"",
+			name:"",
+			keywords:"",
+			list:[
+				{id:1,name:"wang",time:new Date()},
+				{id:2,name:"wang1",time:new Date()}
+			]
+		},
+		methods:{
+			add(){
+				var list1={id:this.id,name:this.name,time:new Date()}
+				this.list.push(list1);
+				this.id=this.name="";
+			},
+			del(id){
+				// this.list.some((item,i)=>{
+				// 	if(item.id==id){
+				// 		this.list.splice(i,1);
+				// 		return true;
+				// 	}
+				// })
+				var index=this.list.findIndex((item)=>{
+					if(item.id==id){
+						return true;
+					}
+				})
+				this.list.splice(index,1);
+			},
+			search(keywords){
+				var newList=[];
+				this.list.forEach(item=>{
+					if(item.name.indexOf(keywords)!=-1){
+						newList.push(item);
+					}
+				})
+				return newList;
+			}
+		}
+	})
+</script>
+</body>
+</html>
